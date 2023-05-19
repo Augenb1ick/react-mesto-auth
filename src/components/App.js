@@ -40,28 +40,6 @@ function App() {
 
   const navigate = useNavigate();
 
-  function handleChangeRenderingStatus(isRendering) {
-    setIsRendering(isRendering);
-  }
-
-  useEffect(() => {
-    api
-      .getInitialCards()
-      .then((data) => {
-        setCards(data);
-      })
-      .catch((err) => console.error(err));
-  }, []);
-
-  useEffect(() => {
-    api
-      .getUserInfo()
-      .then((data) => {
-        setCurrentUser(data);
-      })
-      .catch((err) => console.error(err));
-  }, []);
-
   useEffect(() => {
     const jwt = localStorage.getItem("jwt");
     if (jwt) {
@@ -77,6 +55,23 @@ function App() {
         });
     }
   }, []);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      api
+        .getUserInfo()
+        .then((data) => {
+          setCurrentUser(data);
+        })
+        .catch((err) => console.error(err));
+      api
+        .getInitialCards()
+        .then((data) => {
+          setCards(data);
+        })
+        .catch((err) => console.error(err));
+    }
+  }, [isLoggedIn]);
 
   function handleEditProfileClick() {
     setIsEditProfilePopupOpen(true);
@@ -123,6 +118,7 @@ function App() {
 
   function handleCardDelete(e) {
     e.preventDefault();
+    setIsRendering(true);
     api
       .deleteCard(cardToBeDeleted._id)
       .then(() => {
@@ -131,11 +127,14 @@ function App() {
         );
         closeAllPopups();
       })
-      .catch((err) => console.error(err));
+      .catch((err) => console.error(err))
+      .finally(() => {
+        setIsRendering(false);
+      });
   }
 
   function handleUpdateUser(userData) {
-    handleChangeRenderingStatus(true);
+    setIsRendering(true);
     api
       .editProfileInfo(userData)
       .then((res) => {
@@ -144,12 +143,12 @@ function App() {
       })
       .catch((err) => console.error(err))
       .finally(() => {
-        handleChangeRenderingStatus(false);
+        setIsRendering(false);
       });
   }
 
   function handleUpdateAvatar(avatarData) {
-    handleChangeRenderingStatus(true);
+    setIsRendering(true);
     api
       .editAvatar(avatarData)
       .then((res) => {
@@ -158,12 +157,12 @@ function App() {
       })
       .catch((err) => console.error(err))
       .finally(() => {
-        handleChangeRenderingStatus(false);
+        setIsRendering(false);
       });
   }
 
   function handleAddPlaceSubmit(placeData) {
-    handleChangeRenderingStatus(true);
+    setIsRendering(true);
     api
       .postCard(placeData)
       .then((newCard) => {
@@ -172,7 +171,7 @@ function App() {
       })
       .catch((err) => console.error(err))
       .finally(() => {
-        handleChangeRenderingStatus(false);
+        setIsRendering(false);
       });
   }
 
@@ -269,6 +268,7 @@ function App() {
             path="/sign-up"
             element={<Register onSubmit={handleRegistrationSubmit} />}
           />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
         <Footer />
       </div>
@@ -277,6 +277,7 @@ function App() {
         onClose={closeAllPopups}
         isRegSuccess={isRegSuccess}
         errorMessage={errorMessage}
+        successMessage={"Вы успешно зарегистрировались"}
       />
       <EditProfilePopup
         isOpen={isEditProfilePopupOpen}

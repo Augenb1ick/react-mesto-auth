@@ -26,7 +26,11 @@ function PopupWithForm(props) {
             name="submit"
             disabled={!props.isValid}
           >
-            {!props.isRendering ? "Сохранить" : "Сохраняем..."}
+            {!props.buttonText
+              ? !props.isRendering
+                ? "Сохранить"
+                : "Сохраняем..."
+              : props.buttonText}
           </button>
         </form>
         <button
