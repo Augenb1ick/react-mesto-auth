@@ -17,7 +17,7 @@ function InfoTooltip(props) {
         <h2 className="popup__heading popup__heading_infotooltip">
           {props.isRegSuccess
             ? "Вы успешно зарегистрировались"
-            : "Что-то пошло не так! Попробуйте еще раз."}
+            : props.errorMessage}
         </h2>
         <button
           className="popup__close-btn"

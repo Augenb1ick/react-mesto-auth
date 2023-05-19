@@ -36,6 +36,7 @@ function App() {
 
   const [isInfoTooltipOpen, setIsInfoTooltipOpen] = useState(false);
   const [isRegSuccess, setIsRegSuccess] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const navigate = useNavigate();
 
@@ -176,14 +177,26 @@ function App() {
   }
 
   function handleLoginSubmit(data) {
-    auth.authorize(data.password, data.email).then((res) => {
-      if (res) {
-        localStorage.setItem("jwt", res.token);
-        setUserEmail(data.email);
-        setIsLoggedIn(true);
-        navigate("/", { replace: true });
-      }
-    });
+    auth
+      .authorize(data.password, data.email)
+      .then((res) => {
+        if (res) {
+          localStorage.setItem("jwt", res.token);
+          setUserEmail(data.email);
+          setIsLoggedIn(true);
+          navigate("/", { replace: true });
+        }
+      })
+      .catch((err) => {
+        if (err === "Ошибка: 401") {
+          setErrorMessage("Логин или пароль указаны неверно!");
+        } else {
+          setErrorMessage("Что-то пошло не так! Попробуйте ещё раз.");
+        }
+        setIsRegSuccess(false);
+        setIsInfoTooltipOpen(true);
+        console.log(err);
+      });
   }
 
   function handleRegistrationSubmit(data) {
@@ -197,6 +210,14 @@ function App() {
         }
       })
       .catch((err) => {
+        setIsInfoTooltipOpen(true);
+        if (err === "Ошибка: 400") {
+          setErrorMessage("Пользователь с таким email уже зарегистрирован!");
+        } else {
+          setErrorMessage("Что-то пошло не так! Попробуйте ещё раз.");
+        }
+        setIsRegSuccess(false);
+        setIsInfoTooltipOpen(true);
         console.log(err);
       });
   }
@@ -255,6 +276,7 @@ function App() {
         isOpen={isInfoTooltipOpen}
         onClose={closeAllPopups}
         isRegSuccess={isRegSuccess}
+        errorMessage={errorMessage}
       />
       <EditProfilePopup
         isOpen={isEditProfilePopupOpen}
