@@ -1,0 +1,7 @@
+.entry-page__button_disabled {
+    opacity: 0.2;
+}
+
+.entry-page__button_disabled:hover {
+    opacity: 0.2;
+  }

@@ -1,0 +1,12 @@
+.header__link-contaner {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 24px;
+}
+
+@media screen and (max-width: 768px) {
+    .header__link-contaner {
+        margin-right: 27px;
+    }
+}

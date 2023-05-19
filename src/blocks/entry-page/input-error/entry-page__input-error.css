@@ -1,0 +1,14 @@
+.entry-page__input-error {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 15px;
+    color: #ff0000;
+    opacity: 1;
+    transition: 0.3s;
+    display: block;
+    min-height: 30px;
+    margin-top: 5px;
+    text-align: start;
+    align-self: flex-start;
+}
