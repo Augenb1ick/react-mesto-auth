@@ -9,7 +9,6 @@ export default function usePopupClose(isOpen, closePopup) {
         closePopup();
       }
     };
-
     const handleEscape = (e) => {
       if (e.key === "Escape") {
         closePopup();
